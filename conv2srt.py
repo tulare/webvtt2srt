@@ -8,8 +8,11 @@ if len(sys.argv) == 2 :
 else :
 	f = sys.stdin
 
+# Motifs de recherche
 patEntete = re.compile("^WEBVTT$")
 patTime = re.compile("^[0-9][0-9]:[0-9][0-9]:")
+patCoulDeb = re.compile(r"<c\.(\w+)>", re.IGNORECASE)
+patCoulFin = re.compile(r"</c>")
 
 numline = -1
 numblock = 0
@@ -40,7 +43,12 @@ for line in f :
 		print ligne.replace(".", ",")
 		continue
 
+	# lignes correspondant à un code couleur : début
+	ligne = patCoulDeb.sub(r'<font color="\1">', ligne)
+
+	# lignes correspondant à un code couleur : fin
+	ligne = patCoulFin.sub("</font>", ligne)
+
 	# les autres lignes sans changement
-	else :
-		print ligne
+	print ligne
 
